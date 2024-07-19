@@ -1,0 +1,13 @@
+`timescale 1ns / 1ps
+
+module four_to_one_MUX(Output, A, B, C,D,S);
+output Output;
+input A,B,C,D;
+input [1:0]S;
+wire [1:0]W;
+
+MUX (Output,W[0], W[1],S[1]);
+MUX (W[0], A,B,S[0]);
+MUX (W[1], C,D, S[0]);
+
+endmodule

@@ -1,0 +1,13 @@
+`timescale 1ns / 1ps
+
+module Convertor_eight_bit( Output, A
+    );
+	 output [7:0]Output;
+	 input[3:0]A;
+	 buf b0(Output[0], A[0]);
+	 buf b1(Output[1], A[1]);
+	 buf b2(Output[2], A[2]);
+	 buf b3(Output[3], A[3]);
+	 
+	 assign Output[7:4] = 4'b0000;
+	 endmodule

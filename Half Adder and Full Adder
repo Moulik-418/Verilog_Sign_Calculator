@@ -1,0 +1,28 @@
+`timescale 1ns / 1ps
+
+module half_add( sum, cout, a,b, reset);
+	 output  sum, cout;
+	 input a,b, reset;
+	 wire w1, w2;
+	 xor g1(w1, a,b);
+	 and g2(w2, a,b);
+	 and g3 (sum, w1,reset);
+	 and g4 (cout, w2,reset);
+	 
+endmodule
+
+
+// Full Adder
+
+module full_add(sum, cout, cin, a, b, reset);
+output sum , cout;
+input a,b,cin,reset;
+wire w1,w2,w3;
+
+
+half_add HA1(w1, w2,a, b, reset);
+
+half_add HA2(sum,w3,w1,cin,reset);
+or g1(cout, w2,w3);
+
+endmodule

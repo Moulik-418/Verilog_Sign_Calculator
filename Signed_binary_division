@@ -1,0 +1,44 @@
+`timescale 1ns / 1ps
+
+module Signed_Div(Q, Rem, A, B, Sign, reset
+    );
+output [4:0]Q; output [3:0]Rem;
+input [3:0]A, B; input [1:0]Sign; input reset;
+
+wire [3:0]PQ, PR;
+wire Net_Sign;
+
+Unsigned_Div UD(PQ,PR, A,B,reset);
+
+xor Y1(Net_Sign, Sign[1], Sign[0]);
+
+wire [4:0]NQ_added;
+wire[3:0] NQ;
+four_bit_adder fba1 (NQ_added, PQ, (4'b0001), reset);
+assign NQ[3:0] = NQ_added[3:0];
+
+wire [3:0]NR;
+wire [3:0]NR_TC;
+wire[4:0]NR_added;
+Twos_Comp_FB TC1 (NR_TC, PR, (1),reset);
+four_bit_adder fba2 (NR_added, B, NR_TC, reset);
+
+assign NR[3:0] = NR_added[3:0];
+wire [3:0]InRem;
+MUX M10 (InRem[0], PR[0], NR[0], Net_Sign);
+MUX M11 (InRem[1], PR[1], NR[1], Net_Sign);
+MUX M12 ((InRem[2]), PR[2], NR[2], Net_Sign);
+MUX M13 ((InRem[3]), PR[3], NR[3], Net_Sign);
+
+and a0 (Rem[0], InRem[0],reset);
+and a1 (Rem[1], InRem[1],reset);
+and a2 (Rem[2], InRem[2],reset);
+and a3 (Rem[3], InRem[3],reset);
+
+MUX M20 (Q[0], PQ[0], NQ[0], Net_Sign);
+MUX M21 (Q[1], PQ[1], NQ[1], Net_Sign);
+MUX M22 (Q[2], PQ[2], NQ[2], Net_Sign);
+MUX M23 (Q[3], PQ[3], NQ[3], Net_Sign);
+assign Q[4] = Net_Sign;
+
+endmodule

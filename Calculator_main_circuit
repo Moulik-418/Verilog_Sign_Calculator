@@ -1,0 +1,35 @@
+`timescale 1ns / 1ps
+
+module Calculator( Output,Remainder, A, B, Sign,Operation, reset);
+output [8:0]Output;
+input [3:0]A, B;
+input [1:0]Sign, Operation;
+output [3:0]Remainder;
+input reset;
+
+wire [8:0]ADD;
+wire [8:0]SUB;
+wire [8:0]MUP;
+wire [4:0]Quo;
+wire [3:0]Rem;
+
+Addition Y(ADD,A,B,reset,Sign);
+Subtraction S(SUB, A, B, reset, Sign);
+Multiplication Mul(MUP,A,B,Sign,reset);
+Signed_Div div(Quo,Rem,A,B,Sign,reset);
+
+four_to_one_MUX M0 (Output[0], ADD[0], SUB[0], MUP[0],Quo[0],Operation);
+four_to_one_MUX M1 (Output[1], ADD[1], SUB[1], MUP[1],Quo[1],Operation);
+four_to_one_MUX M2 (Output[2], ADD[2], SUB[2], MUP[2],Quo[2],Operation);
+four_to_one_MUX M3 (Output[3], ADD[3], SUB[3], MUP[3],Quo[3],Operation);
+four_to_one_MUX M4 (Output[4], ADD[4], SUB[4], MUP[4],(1'b0),Operation);
+four_to_one_MUX M5 (Output[5], ADD[5], SUB[5], MUP[5],(1'b0),Operation);
+four_to_one_MUX M6 (Output[6], ADD[6], SUB[6], MUP[6],(1'b0),Operation);
+four_to_one_MUX M7 (Output[7], ADD[7], SUB[7], MUP[7],(1'b0),Operation);
+four_to_one_MUX M8 (Output[8], ADD[8], SUB[8], MUP[8],Quo[4],Operation);
+
+and f0 (Remainder[0], Operation[1], Operation[0], Rem[0]);
+and f1 (Remainder[1], Operation[1], Operation[0], Rem[1]);
+and f2 (Remainder[2], Operation[1], Operation[0], Rem[2]);
+and f3 (Remainder[3], Operation[1], Operation[0], Rem[3]);
+endmodule

@@ -1,0 +1,41 @@
+`timescale 1ns / 1ps
+
+module Multiplication(P, A,B, Sign, reset);
+output [8:0]P;
+input [3:0]A; input [3:0]B; input [1:0]Sign; input reset;
+
+wire [5:0]C1;
+wire [3:0]C2;
+wire S; 
+wire [4:0]W1;
+wire [3:0]W2;
+wire [3:0]W3;
+
+
+and D0(P[0], A[0], B[0], reset); // zeroth
+
+half_add HA1 (P[1], C1[0], (A[1] & B[0]), (A[0] & B[1]), reset); //first product
+
+full_add FA1 (W1[0], W2[0], (A[2]&B[0]), (A[1]&B[1]), (A[0]&B[2]), reset); //second product and it's carry
+half_add HA2 (P[2], W3[0], W1[0],C1[0], reset ); half_add HA3 (C1[1], C2[0], W3[0],W2[0], reset);
+
+full_add FA2 (W1[1], W2[1], (A[3]& B[0]), (A[2]&B[1]), (A[1]&B[2]), reset);// third product
+full_add FA3 (P[3], W3[1], W1[1], (A[0]& B[3]), C1[1],reset);
+half_add HA7 (C1[2], C2[1], W3[1], W2[1], reset); // carry
+
+full_add FA4 (W1[2], W2[2], (A[3]&B[1]), (A[2]&B[2]), (A[1]&B[3]), reset); //fourth product
+full_add FA5 (P[4], W3[2],W1[2], C1[2], C2[0],reset);
+half_add HA4 (C1[3], C2[2], W3[2], W2[2],reset); //carry on
+
+
+full_add FA6 (W1[3],W2[3], (A[3]& B[2]), (A[2]&B[3]), C1[3],reset);// fifth product
+half_add HA5 (P[5], W3[3], W1[3], C2[1], reset ); half_add HA6(C1[4], C2[3], W3[3], W2[3],reset); //carry
+
+full_add FA7 (P[6], C1[5], (A[3]&B[3]), C1[4], C2[2], reset);//sixth product and carry
+
+half_add FA8 (P[7], W1[4], C2[3], C1[5], reset);
+xor X2 (S, Sign[1], Sign[0]);
+and (P[8], reset,S);
+ 
+
+endmodule

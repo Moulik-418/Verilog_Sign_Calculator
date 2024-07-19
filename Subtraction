@@ -1,0 +1,37 @@
+`timescale 1ns / 1ps
+module Subtraction(Total_Sum, IA,IB,reset, Sign);
+output [8:0]Total_Sum;
+input [3:0]IA; input[3:0]IB; input [1:0]Sign; input reset;
+wire [7:0]W11;
+wire [7:0]W12;
+wire [7:0]W21;
+wire [7:0]W22;
+wire [8:0]W3;
+wire [7:0]W4;
+
+//Converting four bit input to eight bits 
+Convertor_eight_bit CEB0 (W11, IA);
+Convertor_eight_bit CEB1 (W12, IB);
+
+//Taking complement if necessary
+Twos_Comp TC0 (W21, W11,Sign[1], reset );
+Twos_Comp TC1 (W22, W12,(~Sign[0]), reset );
+
+//Doing addition with signs 
+Eight_bit_adder EBA1(W3, W21, W22, reset);
+
+//taking TWOs Comp again 
+Twos_Comp TC2(W4, W3[7:0],W3[7], reset );
+
+//taking output
+buf b0 (Total_Sum[0], W4[0]);
+buf b1 (Total_Sum[1], W4[1]);
+buf b2 (Total_Sum[2], W4[2]);
+buf b3 (Total_Sum[3], W4[3]);
+buf b4 (Total_Sum[4], W4[4]);
+buf b5 (Total_Sum[5], W4[5]);
+buf b6 (Total_Sum[6], W4[6]);
+buf b7 (Total_Sum[7], W4[7]);
+buf b8 (Total_Sum[8], W3[7]);
+
+endmodule

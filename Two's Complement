@@ -1,0 +1,21 @@
+`timescale 1ns / 1ps
+module Twos_Comp (Output, A, Sign,reset);
+output [7:0] Output;
+input [7:0]A;
+input Sign;
+input reset;
+wire [7:0]B = 8'b00000001;
+wire reset;
+wire [8:0]S;
+
+Eight_bit_adder E1( S, (~A), B, (reset));
+							
+MUX M0(Output[0], A[0], (S[0]), Sign);					
+MUX M1(Output[1], A[1], (S[1]), Sign);
+MUX M2(Output[2], A[2], (S[2]), Sign);
+MUX M3(Output[3], A[3], (S[3]), Sign);
+MUX M4(Output[4], A[4], (S[4]), Sign);
+MUX M5(Output[5], A[5], (S[5]), Sign);
+MUX M6(Output[6], A[6], (S[6]), Sign);
+MUX M7(Output[7], A[7], (S[7]), Sign);							
+ endmodule 
